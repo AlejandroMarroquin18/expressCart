@@ -7,3 +7,9 @@ public/uploads
 env.yaml
 ecosystem.config.js
 bin/googleproducts.xml
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

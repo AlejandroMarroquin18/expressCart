@@ -68,6 +68,7 @@
     "rand-token": "^0.4.0",
     "rimraf": "^2.7.1",
     "sanitize-html": "^2.3.2",
+    "selenium-webdriver": "^4.30.0",
     "sitemap": "^1.6.0",
     "string-strip-html": "^4.3.14",
     "strip-bom": "^3.0.0",
@@ -77,8 +78,12 @@
     "yenv": "^2.1.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.14",
     "ava": "^3.13.0",
     "clean-css": "^4.2.3",
+    "cypress": "^14.2.1",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-extra-rules": "0.0.0-development",

@@ -1,0 +1,234 @@
+{
+  "id": "64dce2ac-45ca-4c07-8200-c14f542eb2f4",
+  "version": "2.0",
+  "name": "ExpressCart",
+  "url": "http://localhost:1111",
+  "tests": [{
+    "id": "cc41eb43-b164-4479-bdd2-03825e50a0d4",
+    "name": "Untitled",
+    "commands": []
+  }, {
+    "id": "8106d24c-5ed3-40d5-b751-fc51b460eb62",
+    "name": "Creación de producto",
+    "commands": [{
+      "id": "49691991-fb34-4e4c-8aa6-21bd2c092668",
+      "comment": "",
+      "command": "open",
+      "target": "/admin/login",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1db7c05e-f158-468b-bf62-9b3597229271",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x736",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "52ef9616-7def-447a-8d47-696ecaae9707",
+      "comment": "",
+      "command": "click",
+      "target": "css=.col-md-4",
+      "targets": [
+        ["css=.col-md-4", "css:finder"],
+        ["xpath=//div[@id='container']/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6f83387c-a360-402a-9ec9-3386222629dd",
+      "comment": "",
+      "command": "click",
+      "target": "css=.col-md-4",
+      "targets": [
+        ["css=.col-md-4", "css:finder"],
+        ["xpath=//div[@id='container']/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ce655718-8297-47fa-8750-4e3296fc8c14",
+      "comment": "",
+      "command": "click",
+      "target": "id=loginForm",
+      "targets": [
+        ["id=loginForm", "id"],
+        ["css=#loginForm", "css:finder"],
+        ["xpath=//button[@id='loginForm']", "xpath:attributes"],
+        ["xpath=//div[@id='container']/div/div/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Sign in')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "65a4df41-46b2-460c-b79e-0eeb4428e3b2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.nav-item:nth-child(4) > .sidebar-link-addon",
+      "targets": [
+        ["css=.nav-item:nth-child(4) > .sidebar-link-addon", "css:finder"],
+        ["xpath=//div[@id='container']/div/nav/div/ul/li[3]/a[2]", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/admin/product/new')]", "xpath:href"],
+        ["xpath=//li[3]/a[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bd1f013a-2ddd-4215-9d63-89848bde19f9",
+      "comment": "",
+      "command": "click",
+      "target": "id=productTitle",
+      "targets": [
+        ["id=productTitle", "id"],
+        ["css=#productTitle", "css:finder"],
+        ["xpath=//input[@id='productTitle']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8e8e62c6-35cc-4146-a0d0-0510fdb55279",
+      "comment": "",
+      "command": "type",
+      "target": "id=productTitle",
+      "targets": [
+        ["id=productTitle", "id"],
+        ["css=#productTitle", "css:finder"],
+        ["xpath=//input[@id='productTitle']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Producto de prueba 2"
+    }, {
+      "id": "9095025a-e010-4ce9-a15a-ad559b370070",
+      "comment": "",
+      "command": "click",
+      "target": "id=productPrice",
+      "targets": [
+        ["id=productPrice", "id"],
+        ["css=#productPrice", "css:finder"],
+        ["xpath=//input[@id='productPrice']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[3]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0aef56e4-8172-40b8-803c-4e4c851e0623",
+      "comment": "",
+      "command": "type",
+      "target": "id=productPrice",
+      "targets": [
+        ["id=productPrice", "id"],
+        ["css=#productPrice", "css:finder"],
+        ["xpath=//input[@id='productPrice']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[3]/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/div/div/input", "xpath:position"]
+      ],
+      "value": "28.99"
+    }, {
+      "id": "d6db4efc-0687-4e73-9d7b-e74d03e13764",
+      "comment": "",
+      "command": "click",
+      "target": "id=productGtin",
+      "targets": [
+        ["id=productGtin", "id"],
+        ["css=#productGtin", "css:finder"],
+        ["xpath=//input[@id='productGtin']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[3]/div[2]/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e216bbec-8a33-49f3-9aba-7c88b0e81fc2",
+      "comment": "",
+      "command": "type",
+      "target": "id=productGtin",
+      "targets": [
+        ["id=productGtin", "id"],
+        ["css=#productGtin", "css:finder"],
+        ["xpath=//input[@id='productGtin']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[3]/div[2]/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "12345678"
+    }, {
+      "id": "2b7eae3b-7955-4960-98d4-dc7faa0429d1",
+      "comment": "",
+      "command": "click",
+      "target": "id=productBrand",
+      "targets": [
+        ["id=productBrand", "id"],
+        ["css=#productBrand", "css:finder"],
+        ["xpath=//input[@id='productBrand']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[3]/div[3]/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ced31b57-8a1d-425f-911a-673149995038",
+      "comment": "",
+      "command": "type",
+      "target": "id=productBrand",
+      "targets": [
+        ["id=productBrand", "id"],
+        ["css=#productBrand", "css:finder"],
+        ["xpath=//input[@id='productBrand']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div[3]/div[3]/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12345678"
+    }, {
+      "id": "6b0d0f1c-871a-4192-be15-aae489f3ad94",
+      "comment": "",
+      "command": "click",
+      "target": "css=.note-editable",
+      "targets": [
+        ["css=.note-editable", "css:finder"],
+        ["xpath=//div[@id='editor-wrapper']/div/div[3]/div[2]", "xpath:idRelative"],
+        ["xpath=//div/div[3]/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "faee6a05-8c2d-403e-bc9f-af19d5f9a81e",
+      "comment": "",
+      "command": "editContent",
+      "target": "css=.note-editable",
+      "targets": [
+        ["css=.note-editable", "css:finder"],
+        ["xpath=//div[@id='editor-wrapper']/div/div[3]/div[2]", "xpath:idRelative"],
+        ["xpath=//div/div[3]/div[2]", "xpath:position"]
+      ],
+      "value": "<p>Este es un producto de prueba creado para probar selenium IDE</p>"
+    }, {
+      "id": "ac3f8c3a-2b0a-4851-9fe5-8998c0282914",
+      "comment": "",
+      "command": "click",
+      "target": "id=frm_edit_product_save",
+      "targets": [
+        ["id=frm_edit_product_save", "id"],
+        ["css=#frm_edit_product_save", "css:finder"],
+        ["xpath=//button[@id='frm_edit_product_save']", "xpath:attributes"],
+        ["xpath=//form[@id='productNewForm']/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Add product')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "8b221f55-4df2-4219-ab89-47e82199515f",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "34828c13-8709-4c28-92d2-5f4f6288f955",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["cc41eb43-b164-4479-bdd2-03825e50a0d4"]
+  }],
+  "urls": ["http://localhost:1111/"],
+  "plugins": []
+}
