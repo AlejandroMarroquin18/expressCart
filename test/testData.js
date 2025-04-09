@@ -4,9 +4,9 @@ const { By, until } = require('selenium-webdriver');
 // Datos de prueba para productos
 const producto = {
   nombre: faker.commerce.productName(),
-  precio: faker.commerce.price({ min: 10, max: 1000, dec: 2 }), // Sintaxis actualizada
-  gtin: faker.string.numeric({ length: 13 }), // Reemplazo para datatype.number
-  marca: faker.company.name(), // companyName() cambió a name()
+  precio: faker.commerce.price({ min: 10, max: 1000, dec: 2 }),
+  gtin: faker.string.numeric({ length: 13 }),
+  marca: faker.company.name(), 
   descripcion: faker.lorem.paragraph()
 };
 
@@ -23,22 +23,6 @@ const cliente = {
   telefono: faker.string.numeric(10), 
   password: 'Test1234!'
 };
-
-// Función para login de administrador
-async function loginAsAdminPlaywright(page) {
-  await page.goto("http://localhost:1111/admin/login");
-  await page.fill("#email", "admin@test.com");
-  await page.fill("#password", "12345678");
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.waitForURL("**/admin/dashboard");
-}
-
-// Función para agregar producto al carrito
-async function agregarProductoAlCarrito(page) {
-  await page.goto("http://localhost:1111");
-  await page.getByRole("button", { name: "Add to cart" }).first().click();
-  await page.waitForSelector("#notify_message");
-}
 
 // En tu archivo testData.js
 async function agregarProductoAlCarritoSelenium(driver) {
@@ -72,38 +56,10 @@ async function agregarProductoAlCarritoSelenium(driver) {
   }
 }
 
-async function loginAsAdminSelenium(driver) {
-  try {
-      console.log('Navegando a página de login de administrador...');
-      await driver.get("http://localhost:1111/admin/login");
-      
-      console.log('Rellenando formulario de login...');
-      await driver.findElement(By.id('email')).sendKeys('admin@test.com');
-      await driver.findElement(By.id('password')).sendKeys('12345678');
-      
-      console.log('Enviando formulario...');
-      await driver.findElement(By.xpath('//button[contains(text(), "Sign in")]')).click();
-      
-      console.log('Esperando redirección al dashboard...');
-      await driver.wait(until.urlContains('/admin/dashboard'), 10000);
-      
-      console.log('Login de administrador completado con éxito');
-  } catch (error) {
-      console.error('Error en loginAsAdminSelenium:', error);
-      // Tomar screenshot del error
-      await driver.takeScreenshot().then(image => {
-          require('fs').writeFileSync('error-login-admin.png', image, 'base64');
-          console.log('Captura de pantalla guardada como error-login-admin.png');
-      });
-      throw error; // Relanzar el error para manejarlo en el test
-  }
-}
+
 
 module.exports = {
   producto,
   cliente,
-  loginAsAdminPlaywright,
-  loginAsAdminSelenium,
-  agregarProductoAlCarrito,
   agregarProductoAlCarritoSelenium
 };

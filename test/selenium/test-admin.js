@@ -1,47 +1,61 @@
 const { Builder, By, Key, until } = require("selenium-webdriver");
-const { producto } = require("../testData");
+const { producto, cliente } = require("../testData");
 const assert = require("assert");
 
+// Credenciales del administrador creadas inicialmente.
+const adminCredentials = {
+  email: "admin@test.com",
+  password: "12345678"
+};
+
+// Función auxiliar para iniciar sesión como administrador
 async function loginAsAdminSelenium(driver) {
-  // Lógica de inicio de sesión como admin
-  await driver.get("http://localhost:1111/admin/login");
-  await driver.findElement(By.name("email")).sendKeys("admin@test.com");
-  await driver.findElement(By.name("password")).sendKeys("12345678");
-  await driver.findElement(By.css('button[type="submit"]')).click();
-  await driver.wait(until.urlContains("/admin/dashboard"), 5000);
+  try {
+      console.log('Iniciando sesión como administrador');
+      await driver.get("http://localhost:1111/admin/login");
+      await driver.findElement(By.id('email')).sendKeys(adminCredentials.email);
+      await driver.findElement(By.id('password')).sendKeys(adminCredentials.password); 
+      await driver.findElement(By.xpath('//button[contains(text(), "Sign in")]')).click();
+      await driver.wait(until.urlContains('/admin/dashboard'), 10000);   
+      console.log('Login de administrador completado con éxito');
+  } catch (error) {
+      console.error('Error en loginAsAdminSelenium:', error);
+      // Es posible tomar fotos de errores en Selenium
+      await driver.takeScreenshot().then(image => {
+          require('fs').writeFileSync('error-login-admin.png', image, 'base64');
+          console.log('Captura de pantalla guardada como error-login-admin.png');
+      });
+      throw error;
+  }
 }
 
-// Prueba para agregar un producto válido
+
+// Prueba 1: Agregar un producto válido
 async function agregarProductoValido(driver) {
   console.log("Ejecutando prueba: Agregar producto válido");
   await loginAsAdminSelenium(driver);
 
-  // Ir a la sección de productos
+  // Navegación a la sección de productos
   await driver.findElement(By.linkText("Products")).click();
   await driver.wait(until.urlContains("/admin/products"), 5000);
-
   const addProductButton = await driver.findElement(
     By.css('a[href="/admin/product/new"]')
   );
   await driver.executeScript("arguments[0].click();", addProductButton);
   await driver.wait(until.urlContains("/admin/product/new"), 5000);
 
-  await driver
-    .findElement(By.id("productTitle"))
-    .sendKeys("Producto de prueba");
-  await driver.findElement(By.id("productPrice")).sendKeys("29.99");
-  await driver.findElement(By.id("productGtin")).sendKeys("12345678");
-  await driver.findElement(By.id("productBrand")).sendKeys("Adidas");
-  await driver
-    .findElement(By.css("div.note-editable"))
-    .sendKeys("Este es un producto automatizado de prueba");
+  // Llenando del formulario con datos de faker
+  await driver.findElement(By.id("productTitle")).sendKeys(producto.nombre);
+  await driver.findElement(By.id("productPrice")).sendKeys(producto.precio);
+  await driver.findElement(By.id("productGtin")).sendKeys(producto.gtin);
+  await driver.findElement(By.id("productBrand")).sendKeys(producto.marca);
+  await driver.findElement(By.css("div.note-editable")).sendKeys(producto.descripcion);
 
   await driver.findElement(By.id("frm_edit_product_save")).click();
 
+  // Verificación de resultados
   await driver.wait(until.elementLocated(By.id("notify_message")), 10000);
-  const notification = await driver
-    .findElement(By.id("notify_message"))
-    .getText();
+  const notification = await driver.findElement(By.id("notify_message")).getText();
   if (
     notification.includes("New product successfully created") ||
     notification.includes("Permalink already exists. Pick a new one")
@@ -52,7 +66,7 @@ async function agregarProductoValido(driver) {
   }
 }
 
-// Prueba para agregar un producto con un campo obligatorio omitido
+// Prueba 2: Agregar un producto sin precio
 async function agregarProductoInvalidoSinPrecio(driver) {
   console.log("Ejecutando prueba: Agregar producto inválido (sin precio)");
   await loginAsAdminSelenium(driver);
@@ -61,20 +75,17 @@ async function agregarProductoInvalidoSinPrecio(driver) {
   await driver.findElement(By.linkText("Products")).click();
   await driver.wait(until.urlContains("/admin/products"), 5000);
 
+  // Se busca el elemento por su selector CSS y se clickea
   const addProductButton = await driver.findElement(
     By.css('a[href="/admin/product/new"]')
   );
   await driver.executeScript("arguments[0].click();", addProductButton);
   await driver.wait(until.urlContains("/admin/product/new"), 5000);
 
-  const timestamp = Date.now();
-  const nombreProducto = `Producto inválido ${timestamp}`;
-  await driver.findElement(By.id("productTitle")).sendKeys(nombreProducto);
-  await driver.findElement(By.id("productGtin")).sendKeys("12345678");
-  await driver.findElement(By.id("productBrand")).sendKeys("Adidas");
-  await driver
-    .findElement(By.css("div.note-editable"))
-    .sendKeys("Producto de prueba sin precio");
+  await driver.findElement(By.id("productTitle")).sendKeys(producto.nombre);
+  await driver.findElement(By.id("productGtin")).sendKeys(producto.gtin);
+  await driver.findElement(By.id("productBrand")).sendKeys(producto.marca);
+  await driver.findElement(By.css("div.note-editable")).sendKeys(producto.descripcion);
 
   await driver.findElement(By.id("frm_edit_product_save")).click();
 
@@ -87,7 +98,7 @@ async function agregarProductoInvalidoSinPrecio(driver) {
   console.log("✅ La prueba se ejecutó correctamente");
 }
 
-// Prueba para agregar un producto con un precio entero
+// Prueba 3: Agregar un producto con otro formato de precio
 async function agregarProductoConPrecioEntero(driver) {
   console.log("Ejecutando prueba: Agregar producto con precio entero");
   await loginAsAdminSelenium(driver);
@@ -102,18 +113,15 @@ async function agregarProductoConPrecioEntero(driver) {
   await driver.executeScript("arguments[0].click();", addProductButton);
   await driver.wait(until.urlContains("/admin/product/new"), 5000);
 
-  const timestamp = Date.now();
-  const nombreProducto = `Producto con precio entero ${timestamp}`;
-  await driver.findElement(By.id("productTitle")).sendKeys(nombreProducto);
-  await driver.findElement(By.id("productGtin")).sendKeys("12345678");
-  await driver.findElement(By.id("productBrand")).sendKeys("Adidas");
-  await driver
-    .findElement(By.css("div.note-editable"))
-    .sendKeys("Producto de prueba con precio entero");
+  await driver.findElement(By.id("productTitle")).sendKeys(producto.nombre);
+  await driver.findElement(By.id("productGtin")).sendKeys(producto.gtin);
+  await driver.findElement(By.id("productBrand")).sendKeys(producto.marca);
+  await driver.findElement(By.css("div.note-editable")).sendKeys(producto.descripcion);
   await driver.findElement(By.id("productPrice")).sendKeys("10");
 
   await driver.findElement(By.id("frm_edit_product_save")).click();
 
+  // Se espera el modal con el error
   const modalErrorMessage = await driver.wait(
     until.elementLocated(By.css("#validationModalBody p")),
     5000
@@ -123,7 +131,7 @@ async function agregarProductoConPrecioEntero(driver) {
   console.log("✅ La prueba se ejecutó correctamente");
 }
 
-// Prueba para agregar un usuario con contraseñas no coincidentes
+// Prueba 4: Se agrega un usuario con contraseñas distintas
 async function agregarUsuarioConContrasenasDistintas(driver) {
   console.log("Ejecutando prueba: Agregar usuario con contraseñas distintas");
   await loginAsAdminSelenium(driver);
@@ -138,17 +146,15 @@ async function agregarUsuarioConContrasenasDistintas(driver) {
   await driver.executeScript("arguments[0].click();", addUserButton);
   await driver.wait(until.urlContains("/admin/user/new"), 5000);
 
-  await driver
-    .findElement(By.id("usersName"))
-    .sendKeys("Nuevo usuario de prueba");
-  await driver.findElement(By.id("userEmail")).sendKeys("nuevo@user.com");
-  await driver.findElement(By.id("userPassword")).sendKeys("12345678");
-  await driver
-    .findElement(By.css('input[data-match="#userPassword"]'))
-    .sendKeys("otraClave456");
+  // Completar el formulario de usuario
+  await driver.findElement(By.id("usersName")).sendKeys(cliente.nombre);
+  await driver.findElement(By.id("userEmail")).sendKeys(cliente.email);
+  await driver.findElement(By.id("userPassword")).sendKeys(cliente.password);
+  await driver.findElement(By.css('input[data-match="#userPassword"]')).sendKeys("otraClave");
 
   await driver.findElement(By.css('button[type="submit"]')).click();
 
+  // Espera que el selector de CSS tenga la clase has-error
   const confirmPasswordContainer = await driver.findElement(
     By.css("div.form-group.has-error.has-danger")
   );
@@ -157,7 +163,7 @@ async function agregarUsuarioConContrasenasDistintas(driver) {
   console.log("✅ La prueba se ejecutó correctamente");
 }
 
-// Prueba para crear una orden y no llenar el campo de nombre
+// Prueba 5: Crear una orden y no llenar el campo de nombre
 async function crearOrdenSinNombre(driver) {
   console.log("Ejecutando prueba: Crear orden sin llenar el campo de nombre");
   await loginAsAdminSelenium(driver);
@@ -172,18 +178,18 @@ async function crearOrdenSinNombre(driver) {
   await driver.executeScript("arguments[0].click();", createOrderButton);
   await driver.wait(until.urlContains("/admin/order/create"), 5000);
 
-  await driver
-    .findElement(By.id("customerEmail"))
-    .sendKeys("nuevouser@gmail.com");
-  await driver.findElement(By.id("orderLastName")).sendKeys("Marroquin");
-  await driver.findElement(By.id("orderCompany")).sendKeys("Univalle");
-  await driver.findElement(By.id("orderAddress1")).sendKeys("Cali 122");
-  await driver.findElement(By.id("orderState")).sendKeys("Valle");
-  await driver.findElement(By.id("orderPostcode")).sendKeys("710022");
-  await driver.findElement(By.id("orderPhone")).sendKeys("3007294428");
+  // Se completa el formulario
+  await driver.findElement(By.id("customerEmail")).sendKeys(cliente.email);
+  await driver.findElement(By.id("orderLastName")).sendKeys(cliente.apellido);
+  await driver.findElement(By.id("orderCompany")).sendKeys(cliente.empresa);
+  await driver.findElement(By.id("orderAddress1")).sendKeys(cliente.direccion);
+  await driver.findElement(By.id("orderState")).sendKeys(cliente.estado);
+  await driver.findElement(By.id("orderPostcode")).sendKeys(cliente.codigo_postal);
+  await driver.findElement(By.id("orderPhone")).sendKeys(cliente.telefono);
 
   await driver.findElement(By.id("orderCreate")).click();
 
+  // Se espera la clase hass-error y has-danger
   const firstNameContainer = await driver.findElement(
     By.css("div.form-group.has-error.has-danger")
   );
@@ -196,6 +202,7 @@ async function crearOrdenSinNombre(driver) {
   console.log("✅ La prueba se ejecutó correctamente");
 }
 
+//Prueba 6: Crear una orden a un cliente que no se ha registrado
 async function crearOrdenClienteNoRegistrado(driver) {
   console.log("Ejecutando prueba: Crear orden a un cliente no registrado");
 
@@ -213,16 +220,14 @@ async function crearOrdenClienteNoRegistrado(driver) {
   await driver.wait(until.urlContains("/admin/order/create"), 5000);
 
   // Llenar el formulario de orden con un cliente no registrado
-  await driver
-    .findElement(By.id("customerEmail"))
-    .sendKeys("nuevouser@gmail.com");
-  await driver.findElement(By.id("orderFirstName")).sendKeys("Alejandro");
-  await driver.findElement(By.id("orderLastName")).sendKeys("Marroquin");
-  await driver.findElement(By.id("orderCompany")).sendKeys("Univalle");
-  await driver.findElement(By.id("orderAddress1")).sendKeys("Cali 122");
-  await driver.findElement(By.id("orderState")).sendKeys("Valle");
-  await driver.findElement(By.id("orderPostcode")).sendKeys("710022");
-  await driver.findElement(By.id("orderPhone")).sendKeys("3007294428");
+  await driver.findElement(By.id("customerEmail")).sendKeys(cliente.email);
+  await driver.findElement(By.id("orderFirstName")).sendKeys(cliente.nombre);
+  await driver.findElement(By.id("orderLastName")).sendKeys(cliente.apellido);
+  await driver.findElement(By.id("orderCompany")).sendKeys(cliente.empresa);
+  await driver.findElement(By.id("orderAddress1")).sendKeys(cliente.direccion);
+  await driver.findElement(By.id("orderState")).sendKeys(cliente.estado);
+  await driver.findElement(By.id("orderPostcode")).sendKeys(cliente.codigo_postal);
+  await driver.findElement(By.id("orderPhone")).sendKeys(cliente.telefono);
 
   // Hacer clic en el botón para buscar el cliente
   await driver.findElement(By.id("lookupCustomer")).click();
@@ -234,12 +239,29 @@ async function crearOrdenClienteNoRegistrado(driver) {
     ),
     5000
   );
-
   const messageText = await noCustomerMessage.getText();
-  console.log("Mensaje de error:", messageText); 
   assert(messageText.includes("No customers found")); 
-
   console.log("✅ La prueba se ejecutó correctamente");
+}
+
+// Prueba 7: Eliminar producto para pruebas
+async function eliminarProducto(driver) {
+  try {
+    await loginAsAdminSelenium(driver);
+
+    await driver.findElement(By.linkText("Products")).click();
+    await driver.wait(until.urlContains("/admin/products"), 5000);
+
+    // Localizar el contenedor del botón de eliminación
+    const deleteButton = await driver.findElement(
+      By.css("button.btn-delete-product")
+    );
+    await deleteButton.click();
+
+    await driver.switchTo().alert().accept(); // Aceptar el diálogo de confirmación
+  } finally {
+    await driver.quit();
+  }
 }
 
 (async () => {
@@ -253,6 +275,7 @@ async function crearOrdenClienteNoRegistrado(driver) {
     await agregarUsuarioConContrasenasDistintas(driver); 
     await crearOrdenSinNombre(driver);
     await crearOrdenClienteNoRegistrado(driver);
+    await eliminarProducto(driver);
   } catch (error) {
     console.log("❌ Error en la prueba:", error.message);
   } finally {

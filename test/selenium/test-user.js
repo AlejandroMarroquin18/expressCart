@@ -2,16 +2,7 @@ const { Builder, By, Key, until } = require("selenium-webdriver");
 const { cliente } = require("../testData");
 const assert = require("assert");
 
-// Función para iniciar sesión como admin
-async function loginAsAdminSelenium(driver) {
-  await driver.get("http://localhost:1111/admin/login");
-  await driver.findElement(By.name("email")).sendKeys("admin@test.com");
-  await driver.findElement(By.name("password")).sendKeys("12345678");
-  await driver.findElement(By.css('button[type="submit"]')).click();
-  await driver.wait(until.urlContains("/admin/dashboard"), 5000);
-}
-
-// Función de utilidad para ejecutar pruebas
+// Función auxiliar para ejecutar las pruebas
 async function runTest(testName, testFunction) {
   try {
     console.log(`Ejecutando prueba: ${testName}`);
@@ -22,7 +13,7 @@ async function runTest(testName, testFunction) {
   }
 }
 
-// Agregar producto al carrito con éxito
+// Prueba 1: Agregar producto al carrito con éxito
 async function agregarProductoAlCarrito() {
   let driver = await new Builder().forBrowser("chrome").build();
   try {
@@ -35,12 +26,8 @@ async function agregarProductoAlCarrito() {
     await addToCartButton.click();
 
     // Esperar que aparezca la notificación de éxito
-    const notifyMessage = await driver.wait(
-      until.elementLocated(By.id("notify_message")),
-      10000
-    );
+    const notifyMessage = await driver.wait(until.elementLocated(By.id("notify_message")),10000);
     const notificationText = await notifyMessage.getText();
-
     // Verificar que la notificación contiene el mensaje esperado
     assert(notificationText.includes("Cart successfully updated"));
   } finally {
@@ -48,7 +35,7 @@ async function agregarProductoAlCarrito() {
   }
 }
 
-// Agregar usuario en el proceso de compras
+// Prueba 2: Agregar usuario en el proceso de compras
 async function agregarUsuarioEnProcesoDeCompras() {
   let driver = await new Builder().forBrowser("chrome").build();
   try {
@@ -73,15 +60,9 @@ async function agregarUsuarioEnProcesoDeCompras() {
     await driver.findElement(By.id("shipAddr1")).sendKeys(cliente.direccion);
     await driver.findElement(By.id("shipCountry")).sendKeys(cliente.pais);
     await driver.findElement(By.id("shipState")).sendKeys(cliente.estado);
-    await driver
-      .findElement(By.id("shipPostcode"))
-      .sendKeys(cliente.codigo_postal);
-    await driver
-      .findElement(By.css('input[placeholder="Phone number"]'))
-      .sendKeys(cliente.telefono);
-    await driver
-      .findElement(By.id("newCustomerPassword"))
-      .sendKeys(cliente.password);
+    await driver.findElement(By.id("shipPostcode")).sendKeys(cliente.codigo_postal);
+    await driver.findElement(By.css('input[placeholder="Phone number"]')).sendKeys(cliente.telefono);
+    await driver.findElement(By.id("newCustomerPassword")).sendKeys(cliente.password);
 
     // Localizar el checkbox de "Create an account"
     const checkbox = await driver.findElement(By.id("createAccountCheckbox"));
@@ -97,7 +78,7 @@ async function agregarUsuarioEnProcesoDeCompras() {
   }
 }
 
-// Proceso de pago omitiendo el valor de email
+// Prueba 3: Proceso de pago omitiendo el valor de email
 async function procesoPagoOmitiendoEmail() {
   let driver = await new Builder().forBrowser("chrome").build();
   try {
@@ -116,15 +97,9 @@ async function procesoPagoOmitiendoEmail() {
     await driver.findElement(By.id("shipAddr1")).sendKeys(cliente.direccion);
     await driver.findElement(By.id("shipCountry")).sendKeys(cliente.pais);
     await driver.findElement(By.id("shipState")).sendKeys(cliente.estado);
-    await driver
-      .findElement(By.id("shipPostcode"))
-      .sendKeys(cliente.codigo_postal);
-    await driver
-      .findElement(By.css('input[placeholder="Phone number"]'))
-      .sendKeys(cliente.telefono);
-    await driver
-      .findElement(By.id("newCustomerPassword"))
-      .sendKeys(cliente.password);
+    await driver.findElement(By.id("shipPostcode")).sendKeys(cliente.codigo_postal);
+    await driver.findElement(By.css('input[placeholder="Phone number"]')).sendKeys(cliente.telefono);
+    await driver.findElement(By.id("newCustomerPassword")).sendKeys(cliente.password);
 
     const emailField = await driver.findElement(By.id("shipEmail"));
     emailField.focus();
@@ -139,26 +114,20 @@ async function procesoPagoOmitiendoEmail() {
   }
 }
 
-// Verificar valores inválidos al añadir productos al carrito
+// Prueba 4: Verificar valores inválidos al añadir productos al carrito
 async function valoresInvalidosCarrito() {
   let driver = await new Builder().forBrowser("chrome").build();
   try {
     await driver.get("http://localhost:1111");
-    const addToCartButton = await driver.findElement(
-      By.css("a.btn.btn-primary.add-to-cart")
-    );
+    const addToCartButton = await driver.findElement(By.css("a.btn.btn-primary.add-to-cart"));
     await addToCartButton.click();
     await driver.findElement(By.css('a[href="/checkout/cart"]')).click();
 
-    const quantityInput = await driver.findElement(
-      By.css('input[type="number"][data-cartid]')
-    );
+    const quantityInput = await driver.findElement(By.css('input[type="number"][data-cartid]'));
     await quantityInput.sendKeys("-1");
 
     await driver.findElement(By.css('a[href="/checkout/information"]')).click();
-    const updatedQuantity = await driver
-      .findElement(By.css('input[type="number"][data-cartid]'))
-      .getAttribute("value");
+    const updatedQuantity = await driver.findElement(By.css('input[type="number"][data-cartid]')).getAttribute("value");
     assert.strictEqual(
       updatedQuantity,
       "1",
@@ -169,45 +138,22 @@ async function valoresInvalidosCarrito() {
   }
 }
 
-// Login con valores inexistentes
+// Prueba 5: Login con valores inexistentes
 async function loginIncorrecto() {
   let driver = await new Builder().forBrowser("chrome").build();
   try {
+    // Datos incorrectos para el login
     await driver.get("http://localhost:1111/customer/login");
     await driver.findElement(By.id("email")).sendKeys("nouser@test.com");
     await driver.findElement(By.id("password")).sendKeys("abcd");
     await driver.findElement(By.id("customerloginForm")).click();
 
-    const notification = await driver.wait(
-      until.elementLocated(By.id("notify_message")),
-      10000
-    );
+    const notification = await driver.wait(until.elementLocated(By.id("notify_message")),10000);
     const notificationText = await notification.getText();
     assert(
       notificationText.includes("A customer with that email does not exist."),
       "El mensaje de error no es el esperado"
     );
-  } finally {
-    await driver.quit();
-  }
-}
-
-// Eliminar producto para pruebas
-async function eliminarProducto() {
-  let driver = await new Builder().forBrowser("chrome").build();
-  try {
-    await loginAsAdminSelenium(driver);
-
-    await driver.findElement(By.linkText("Products")).click();
-    await driver.wait(until.urlContains("/admin/products"), 5000);
-
-    // Localizar el contenedor del botón de eliminación
-    const deleteButton = await driver.findElement(
-      By.css("button.btn-delete-product")
-    );
-    await deleteButton.click();
-
-    await driver.switchTo().alert().accept(); // Aceptar el diálogo de confirmación
   } finally {
     await driver.quit();
   }
@@ -220,5 +166,4 @@ async function eliminarProducto() {
   await runTest('Proceso de pago omitiendo el valor de email', procesoPagoOmitiendoEmail); //Falla
   await runTest('Valores inválidos al añadir productos al carrito', valoresInvalidosCarrito);
   await runTest('Login de cliente incorrecto', loginIncorrecto);
-  await runTest('Eliminar producto para pruebas', eliminarProducto);
 })();
